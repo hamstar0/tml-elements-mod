@@ -1,6 +1,8 @@
 v1
--	Implement element strengths and weaknesses
+-	Implement API
+-	Implement visual FX
 
+-	Implement element strengths and weaknesses
 -	Define NPC element
 -	Define item elements
 -	Define config for element definitions
