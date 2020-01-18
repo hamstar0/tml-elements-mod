@@ -1,4 +1,5 @@
 ﻿using Elements.Protocols;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -7,7 +8,7 @@ using Terraria.ModLoader.Config;
 
 
 namespace Elements {
-	class ElementsNPC : GlobalNPC {
+	partial class ElementsNPC : GlobalNPC {
 		public static bool CanHaveElement( NPC npc ) {
 			return npc?.active != true && (npc.townNPC || npc.dontTakeDamage);
 		}
@@ -35,7 +36,15 @@ namespace Elements {
 
 		////////////////
 
-		public static int ComputeDamage( int damage, ISet<ElementDefinition> itemDefs, ISet<ElementDefinition> npcDefs ) {
+		public static int ComputeDamage(
+					int damage,
+					ISet<ElementDefinition> itemDefs,
+					ISet<ElementDefinition> npcDefs,
+					out ISet<ElementDefinition> absorbElements,
+					out ISet<ElementDefinition> afflictElements,
+					out int attackAbsorb ) {
+			absorbElements = new HashSet<ElementDefinition>();
+			afflictElements = new HashSet<ElementDefinition>();
 			float baseDamage = damage;
 			float newDamage = damage;
 
@@ -44,9 +53,11 @@ namespace Elements {
 					float dmg;
 					
 					if( itemElemDef.WeakAgainst.Contains( npcElemDef.Name ) ) {
-						dmg = baseDamage * ElementsConfig.Instance.ElementStrengthDamageMultiplier;
-					} else if( itemElemDef.StrongAgainst.Contains( npcElemDef.Name ) ) {
+						afflictElements.Add( itemElemDef );
 						dmg = baseDamage * ElementsConfig.Instance.ElementWeaknessDamageMultiplier;
+					} else if( itemElemDef.StrongAgainst.Contains( npcElemDef.Name ) ) {
+						absorbElements.Add( itemElemDef );
+						dmg = baseDamage * ElementsConfig.Instance.ElementStrengthDamageMultiplier;
 					} else {
 						continue;
 					}
@@ -55,6 +66,11 @@ namespace Elements {
 				}
 			}
 
+			attackAbsorb = damage > newDamage
+				? -1
+				: damage < newDamage
+				? 1
+				: 0;
 			return (int)newDamage;
 		}
 
@@ -69,6 +85,14 @@ namespace Elements {
 
 		public bool IsInitialized { get; internal set; } = false;
 		public ISet<ElementDefinition> Elements { get; internal set; } = new HashSet<ElementDefinition>();
+
+
+		////////////////
+
+		private int AbsorbAnimation = 0;
+
+		private ISet<ElementDefinition> AbsorbedElements;
+		private ISet<ElementDefinition> AfflictedElements;
 
 
 
@@ -88,15 +112,39 @@ namespace Elements {
 		public override void ModifyHitByItem( NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit ) {
 			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
 			var myitem = item.GetGlobalItem<ElementsItem>();
+			int attackWeakness;
 
-			damage = ElementsNPC.ComputeDamage( damage, myitem.Elements, mynpc.Elements );
+			damage = ElementsNPC.ComputeDamage(
+				damage,
+				myitem.Elements,
+				mynpc.Elements,
+				out this.AbsorbedElements,
+				out this.AfflictedElements,
+				out attackWeakness
+			);
+			
+			if( attackWeakness < 0 ) {
+				this.AbsorbAnimation = 30;
+			}
 		}
 
 		public override void ModifyHitByProjectile( NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection ) {
 			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
 			var myproj = projectile.GetGlobalProjectile<ElementsProjectile>();
+			int attackWeakness;
+			
+			damage = ElementsNPC.ComputeDamage(
+				damage,
+				myproj.Elements,
+				mynpc.Elements,
+				out this.AbsorbedElements,
+				out this.AfflictedElements,
+				out attackWeakness
+			);
 
-			damage = ElementsNPC.ComputeDamage( damage, myproj.Elements, mynpc.Elements );
+			if( attackWeakness < 0 ) {
+				this.AbsorbAnimation = 30;
+			}
 		}
 	}
 }

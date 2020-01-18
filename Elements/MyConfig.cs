@@ -70,11 +70,11 @@ namespace Elements {
 		public Dictionary<NPCDefinition, float> AutoAssignedNPCs = new Dictionary<NPCDefinition, float>();
 
 		public Dictionary<string, float> AutoAssignedItemGroups = new Dictionary<string, float> {
-			{ ItemGroupIDs.AnyWeapon, 0.5f }
+			{ ItemGroupIDs.AnyWeapon, 1f }//0.5f
 		};
 
 		public Dictionary<string, float> AutoAssignedNPCGroups = new Dictionary<string, float> {
-			{ NPCGroupIDs.AnyHostileNPC, 0.5f }
+			{ NPCGroupIDs.AnyHostileNPC, 1f }//0.5f
 		};
 	}
 }

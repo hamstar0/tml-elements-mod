@@ -1,6 +1,8 @@
 v1
 -	Implement API
--	Implement visual FX
+-	Draw visual FX for enchanted NPC
+-	Draw visual FX for enchanted item
+-	Draw visual FX for hit NPC
 
 -	Implement element strengths and weaknesses
 -	Define NPC element
