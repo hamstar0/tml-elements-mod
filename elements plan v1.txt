@@ -1,0 +1,33 @@
+Plan v1: Orbs
+-	Pros
+	-	Added strategy
+	-	Recycles mechanics for less gameplay clutter
+-	Cons
+	-	Orb acquisition might skew availability balance
+	-	RNG-heavy
+Plan v2: Natural state
+-	Pros
+	-	Simplifies choice
+	-	Symmetric mechanics; eases understanding
+	-	Promotes adaptability
+-	Cons
+	-	No choice involved
+	-	All elements are same-ey
+Plan v3: Player-specified enchanting
+-	Pros
+	-	Players have something to tinker with
+	-	Symmetric mechanics; eases understanding
+	-	Tactics only
+-	Cons
+	-	Low choice involved
+	-	Tactics only
+	-	Elements might end up as no more than a speedbump for prepared players
+Plan v4: Circumstance enchanting (biomes?)
+-	Pros
+	-	Players have something to quest for AND tinker with
+	-	Other than acquisition, mechanics are symmetric; eases understanding
+	-	Tactics only
+-	Cons
+	-	Only choices are the 'quests' (circumstances) to make a given enchantment
+	-	If quests become easy, elements might be no more than speedbumps for prepared players
+	-	Tactics only
