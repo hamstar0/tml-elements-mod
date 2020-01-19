@@ -10,6 +10,10 @@ using HamstarHelpers.Helpers.Debug;
 
 namespace Elements {
 	class ElementsItem : GlobalItem {
+		public static bool CanHaveElements( Item item ) {
+			return item?.active == true && item.damage > 0;
+		}
+
 		public static void InitializeElement( Item item ) {
 			var config = ElementsConfig.Instance;
 			var myitem = item.GetGlobalItem<ElementsItem>();
@@ -28,10 +32,11 @@ namespace Elements {
 		////////////////
 
 		public override bool CloneNewInstances => false;
+		public override bool InstancePerEntity => true;
 
 
 		////////////////
-		
+
 		public bool IsInitialized { get; private set; } = false;
 		public ISet<ElementDefinition> Elements { get; private set; } = new HashSet<ElementDefinition>();
 
@@ -39,10 +44,20 @@ namespace Elements {
 
 		////////////////
 
+		public override GlobalItem NewInstance( Item item ) {
+			return base.NewInstance( item );
+		}
+
 		public override void SetDefaults( Item item ) {
 			if( !this.IsInitialized ) {
 				ElementsItem.InitializeElement( item );
 			}
+		}
+
+		////
+
+		public override bool NeedsSaving( Item item ) {
+			return ElementsItem.CanHaveElements( item );
 		}
 
 		public override void Load( Item item, TagCompound tag ) {

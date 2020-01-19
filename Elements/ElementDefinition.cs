@@ -27,6 +27,18 @@ namespace Elements {
 		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
 		public float AutoAssignItemWeight = 1f;
 
+		[Range( 0, 280 )]
+		public int DustType;
+
+		[Range( 0, 200 )]
+		[DefaultValue( 20 )]
+		public int DustQuantity;
+
+		[Range( 0f, 15f )]
+		[DefaultValue( 1f )]
+		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
+		public float DustScale;
+
 
 
 		////////////////

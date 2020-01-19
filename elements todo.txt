@@ -1,9 +1,18 @@
 v1
 -	Implement API
+-	Add item tooltips
 -	Draw visual FX for enchanted NPC
 -	Draw visual FX for enchanted item
--	Draw visual FX for hit NPC
 
+-	Draw visual FX for hit NPC
+	-	Define dusts for each element type
+	-	Add config setting for dusts
+	-	@Dusts
+		-	Heat:	6 (light sparks), 55 (puffy), 259 (large flame sparks, x.66)
+		-	Cold:	*16 (puffy), 31 (puffy)
+		-	Water:	13 (chunky), 29 (glowey), *33 (drippy, 1.2x), 67 (thick lit spray), 80 (thick drops)
+		-	Leafy:	44 (spores)
+		-	Any:	43 (lit sparkey puffs)
 -	Implement element strengths and weaknesses
 -	Define NPC element
 -	Define item elements

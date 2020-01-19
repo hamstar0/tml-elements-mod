@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -6,7 +7,6 @@ using Terraria.ModLoader.Config;
 using HamstarHelpers.Classes.UI.ModConfig;
 using HamstarHelpers.Services.Configs;
 using HamstarHelpers.Services.EntityGroups.Definitions;
-using System.ComponentModel;
 
 
 namespace Elements {
@@ -31,21 +31,30 @@ namespace Elements {
 		public List<ElementDefinition> Elements = new List<ElementDefinition> {
 			new ElementDefinition {
 				Name = "Heat",
-				Color = Color.Red,
+				Color = new Color(255, 255, 128),
 				StrongAgainst = new List<string> { "Cold" },
-				WeakAgainst = new List<string> { "Water" }
+				WeakAgainst = new List<string> { "Water" },
+				DustType = 259,
+				DustQuantity = 20,
+				DustScale = 0.66f
 			},
 			new ElementDefinition {
 				Name = "Cold",
 				Color = Color.Cyan,
 				StrongAgainst = new List<string> { "Water" },
-				WeakAgainst = new List<string> { "Heat" }
+				WeakAgainst = new List<string> { "Heat" },
+				DustType = 16,
+				DustQuantity = 20,
+				DustScale = 1f
 			},
 			new ElementDefinition {
 				Name = "Water",
 				Color = Color.Blue,
 				StrongAgainst = new List<string> { "Heat" },
-				WeakAgainst = new List<string> { "Cold" }
+				WeakAgainst = new List<string> { "Cold" },
+				DustType = 33,
+				DustQuantity = 20,
+				DustScale = 1f
 			},
 		};
 

@@ -16,10 +16,11 @@ namespace Elements {
 		////////////////
 
 		public override bool CloneNewInstances => false;
+		public override bool InstancePerEntity => true;
 
 
 		////////////////
-		
+
 		public bool IsInitialized { get; internal set; } = false;
 		public ISet<ElementDefinition> Elements { get; internal set; } = new HashSet<ElementDefinition>();
 

@@ -1,5 +1,4 @@
 ﻿using Elements.Protocols;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -91,8 +90,8 @@ namespace Elements {
 
 		private int AbsorbAnimation = 0;
 
-		private ISet<ElementDefinition> AbsorbedElements;
-		private ISet<ElementDefinition> AfflictedElements;
+		private ISet<ElementDefinition> AbsorbedElements = new HashSet<ElementDefinition>();
+		private ISet<ElementDefinition> AfflictedElements = new HashSet<ElementDefinition>();
 
 
 

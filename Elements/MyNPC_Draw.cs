@@ -9,14 +9,14 @@ namespace Elements {
 		public override void DrawEffects( NPC npc, ref Color drawColor ) {
 			if( this.AbsorbAnimation > 0 ) {
 				foreach( ElementDefinition elemDef in this.AbsorbedElements ) {
-					this.DrawElementAbsorb( (float)this.AbsorbAnimation / 30f, elemDef.Color, ref drawColor );
+					this.DrawElementAbsorb( npc, (float)this.AbsorbAnimation / 30f, elemDef, ref drawColor );
 				}
 				this.AbsorbAnimation--;
 			}
 
 			if( this.AfflictedElements.Count > 0 ) {
 				foreach( ElementDefinition elemDef in this.AfflictedElements ) {
-					this.DrawElementAfflict( elemDef.Color );
+					this.DrawElementAfflict( npc, elemDef );
 				}
 				this.AfflictedElements.Clear();
 			}
@@ -25,11 +25,14 @@ namespace Elements {
 
 		////////////////
 
-		private void DrawElementAbsorb( float amount, Color color, ref Color drawColor ) {
-			drawColor = Color.Lerp( drawColor, color, amount );
+		private void DrawElementAbsorb( NPC npc, float amount, ElementDefinition elemDef, ref Color drawColor ) {
+			drawColor = Color.Lerp( drawColor, elemDef.Color, amount );
 		}
 
-		private void DrawElementAfflict( Color color ) {
+		private void DrawElementAfflict( NPC npc, ElementDefinition elemDef ) {
+			for( int i=0; i<elemDef.DustQuantity; i++ ) {
+				Dust.NewDust( npc.position, npc.width, npc.height, elemDef.DustType, 0f, 0f, 0, elemDef.Color, elemDef.DustScale );
+			}
 		}
 	}
 }
