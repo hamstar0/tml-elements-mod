@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using HamstarHelpers.Helpers.XNA;
 
 
 namespace Elements {
@@ -19,6 +20,10 @@ namespace Elements {
 					this.DrawElementAfflict( npc, elemDef );
 				}
 				this.AfflictedElements.Clear();
+			}
+
+			if( this.ColorAnimation != null ) {
+				XNAColorHelpers.AddGlow( this.ColorAnimation.CurrentColor, drawColor, true );
 			}
 		}
 

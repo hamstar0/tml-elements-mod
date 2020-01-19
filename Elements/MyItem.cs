@@ -16,19 +16,6 @@ namespace Elements {
 			return item?.active == true && item.damage > 0;
 		}
 
-		public static void InitializeElement( Item item ) {
-			var config = ElementsConfig.Instance;
-			var myitem = item.GetGlobalItem<ElementsItem>();
-			var itemDef = new ItemDefinition( item.type );
-			
-			myitem.IsInitialized = true;
-
-			if( config.AutoAssignedItems.ContainsKey( itemDef ) ) {
-				ElementDefinition elemDef = ElementDefinition.PickDefinitionForItem( config.AutoAssignedItems[itemDef] );
-				myitem.Elements.Add( elemDef );
-			}
-		}
-
 
 
 		////////////////
@@ -51,6 +38,10 @@ namespace Elements {
 
 		////////////////
 
+		public override GlobalItem NewInstance( Item item ) {
+			return base.NewInstance( item );
+		}
+
 		public override void SetDefaults( Item item ) {
 			if( !this.IsInitialized ) {
 				this.Initialize( item );
@@ -60,8 +51,22 @@ namespace Elements {
 		////
 
 		private void Initialize( Item item ) {
-			ElementsItem.InitializeElement( item );
+			this.InitializeElement( item );
 			this.InitializeColorAnimation();
+		}
+
+		////
+
+		public void InitializeElement( Item item ) {
+			var config = ElementsConfig.Instance;
+			var itemDef = new ItemDefinition( item.type );
+
+			this.IsInitialized = true;
+
+			if( config.AutoAssignedItems.ContainsKey( itemDef ) ) {
+				ElementDefinition elemDef = ElementDefinition.PickDefinitionForItem( config.AutoAssignedItems[itemDef] );
+				this.Elements.Add( elemDef );
+			}
 		}
 
 		private void InitializeColorAnimation() {
@@ -72,11 +77,13 @@ namespace Elements {
 				colors.Add( Color.Transparent );
 			}
 
-			this.ColorAnimation = AnimatedColors.Create( 15, colors.ToArray() );
+			if( colors.Count > 0 ) {
+				this.ColorAnimation = AnimatedColors.Create( 15, colors.ToArray() );
+			}
 		}
 
 
-		////
+		////////////////
 
 		public override bool NeedsSaving( Item item ) {
 			return ElementsItem.CanHaveElements( item );

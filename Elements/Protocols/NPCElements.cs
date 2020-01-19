@@ -56,7 +56,7 @@ namespace Elements.Protocols {
 
 		private bool SetNpc( int npcWho ) {
 			NPC npc = Main.npc[npcWho];
-			if( !ElementsNPC.CanHaveElement(npc) ) {
+			if( !ElementsNPC.CanHaveElements(npc) ) {
 				return false;
 			}
 

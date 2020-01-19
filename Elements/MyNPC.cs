@@ -1,35 +1,17 @@
-﻿using Elements.Protocols;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
+using HamstarHelpers.Services.AnimatedColor;
+using Elements.Protocols;
 
 
 namespace Elements {
 	partial class ElementsNPC : GlobalNPC {
-		public static bool CanHaveElement( NPC npc ) {
+		public static bool CanHaveElements( NPC npc ) {
 			return npc?.active != true && (npc.townNPC || npc.dontTakeDamage);
-		}
-
-
-		////////////////
-		
-		public static void InitializeElementWithSync( NPC npc ) {
-			var config = ElementsConfig.Instance;
-			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
-			var npcDef = new NPCDefinition( npc.type );
-
-			mynpc.IsInitialized = true;
-
-			if( config.AutoAssignedNPCs.ContainsKey( npcDef ) ) {
-				ElementDefinition elemDef = ElementDefinition.PickDefinitionForNPC( config.AutoAssignedNPCs[npcDef] );
-				mynpc.Elements.Add( elemDef );
-			}
-
-			if( Main.netMode == 2 ) {
-				NPCElementsProtocol.Broadcast( npc.whoAmI );
-			}
 		}
 
 
@@ -80,13 +62,13 @@ namespace Elements {
 		public override bool InstancePerEntity => true;
 
 
-		////////////////
+		////
 
 		public bool IsInitialized { get; internal set; } = false;
 		public ISet<ElementDefinition> Elements { get; internal set; } = new HashSet<ElementDefinition>();
 
 
-		////////////////
+		////
 
 		private int AbsorbAnimation = 0;
 
@@ -94,12 +76,55 @@ namespace Elements {
 		private ISet<ElementDefinition> AfflictedElements = new HashSet<ElementDefinition>();
 
 
+		////
+
+		private AnimatedColors ColorAnimation;
+
+
+
+		////////////////
+
+		private void InitializeWithSync( NPC npc ) {
+			this.InitializeElementWithSync( npc );
+			this.InitializeColorAnimation();
+		}
+
+		private void InitializeElementWithSync( NPC npc ) {
+			var config = ElementsConfig.Instance;
+			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
+			var npcDef = new NPCDefinition( npc.type );
+
+			mynpc.IsInitialized = true;
+
+			if( config.AutoAssignedNPCs.ContainsKey( npcDef ) ) {
+				ElementDefinition elemDef = ElementDefinition.PickDefinitionForNPC( config.AutoAssignedNPCs[npcDef] );
+				mynpc.Elements.Add( elemDef );
+			}
+
+			if( Main.netMode == 2 ) {
+				NPCElementsProtocol.Broadcast( npc.whoAmI );
+			}
+		}
+
+		private void InitializeColorAnimation() {
+			var colors = new List<Color>();
+
+			foreach( ElementDefinition elemDef in this.Elements ) {
+				colors.Add( elemDef.Color );
+				colors.Add( Color.Transparent );
+			}
+
+			if( colors.Count > 0 ) {
+				this.ColorAnimation = AnimatedColors.Create( 15, colors.ToArray() );
+			}
+		}
+
 
 		////////////////
 
 		public override bool PreAI( NPC npc ) {
 			if( !this.IsInitialized ) {
-				ElementsNPC.InitializeElementWithSync( npc );
+				this.InitializeWithSync( npc );
 			}
 			return base.PreAI( npc );
 		}
