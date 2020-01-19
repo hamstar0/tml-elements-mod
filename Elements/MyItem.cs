@@ -1,15 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.IO;
 using HamstarHelpers.Helpers.Debug;
+using HamstarHelpers.Services.AnimatedColor;
 
 
 namespace Elements {
-	class ElementsItem : GlobalItem {
+	partial class ElementsItem : GlobalItem {
 		public static bool CanHaveElements( Item item ) {
 			return item?.active == true && item.damage > 0;
 		}
@@ -41,18 +43,38 @@ namespace Elements {
 		public ISet<ElementDefinition> Elements { get; private set; } = new HashSet<ElementDefinition>();
 
 
+		////////////////
+
+		private AnimatedColors ColorAnimation;
+
+
 
 		////////////////
 
-		public override GlobalItem NewInstance( Item item ) {
-			return base.NewInstance( item );
-		}
-
 		public override void SetDefaults( Item item ) {
 			if( !this.IsInitialized ) {
-				ElementsItem.InitializeElement( item );
+				this.Initialize( item );
 			}
 		}
+
+		////
+
+		private void Initialize( Item item ) {
+			ElementsItem.InitializeElement( item );
+			this.InitializeColorAnimation();
+		}
+
+		private void InitializeColorAnimation() {
+			var colors = new List<Color>();
+
+			foreach( ElementDefinition elemDef in this.Elements ) {
+				colors.Add( elemDef.Color );
+				colors.Add( Color.Transparent );
+			}
+
+			this.ColorAnimation = AnimatedColors.Create( 15, colors.ToArray() );
+		}
+
 
 		////
 
@@ -122,7 +144,7 @@ namespace Elements {
 
 		public override void UpdateInventory( Item item, Player player ) {
 			if( !this.IsInitialized ) {
-				ElementsItem.InitializeElement( item );
+				this.Initialize( item );
 			}
 		}
 	}
