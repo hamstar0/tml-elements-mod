@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
@@ -8,6 +10,16 @@ using HamstarHelpers.Helpers.XNA;
 
 namespace Elements {
 	partial class ElementsItem : GlobalItem {
+		public override void ModifyTooltips( Item item, List<TooltipLine> tooltips ) {
+			if( this.IsInitialized && ElementsConfig.Instance.DebugModeInfo ) {
+				var tip = new TooltipLine( this.mod, "ElementsDebug", "Elements: "+string.Join(", ", this.Elements.Select(e=>e.Name)) );
+				tooltips.Add( tip );
+			}
+		}
+
+
+		////////////////
+
 		public override Color? GetAlpha( Item item, Color lightColor ) {
 			if( !this.IsInitialized || this.ColorAnimation == null ) {
 				return null;

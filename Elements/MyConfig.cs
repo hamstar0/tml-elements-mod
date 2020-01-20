@@ -28,7 +28,10 @@ namespace Elements {
 
 		////////////////
 
-		public List<ElementDefinition> Elements = new List<ElementDefinition> {
+		public bool DebugModeInfo { get; set; } = false;
+		public bool DebugModeReset { get; set; } = false;
+
+		public List<ElementDefinition> Elements { get; set; } = new List<ElementDefinition> {
 			new ElementDefinition {
 				Name = "Heat",
 				Color = new Color(255, 255, 128),
@@ -64,25 +67,25 @@ namespace Elements {
 		[Range( 0f, 100f )]
 		[DefaultValue( 2f )]
 		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
-		public float ElementStrengthDamageMultiplier = 2f;
+		public float ElementStrengthDamageMultiplier { get; set; } = 2f;
 
 		[Range( 0f, 100f )]
 		[DefaultValue( 0.25f )]
 		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
-		public float ElementWeaknessDamageMultiplier = 0.25f;
+		public float ElementWeaknessDamageMultiplier { get; set; } = 0.25f;
 
 
 		////////////////
 
-		public Dictionary<ItemDefinition, float> AutoAssignedItems = new Dictionary<ItemDefinition, float>();
+		public Dictionary<ItemDefinition, float> AutoAssignedItems { get; set; } = new Dictionary<ItemDefinition, float>();
 
-		public Dictionary<NPCDefinition, float> AutoAssignedNPCs = new Dictionary<NPCDefinition, float>();
+		public Dictionary<NPCDefinition, float> AutoAssignedNPCs { get; set; } = new Dictionary<NPCDefinition, float>();
 
-		public Dictionary<string, float> AutoAssignedItemGroups = new Dictionary<string, float> {
+		public Dictionary<string, float> AutoAssignedItemGroups { get; set; } = new Dictionary<string, float> {
 			{ ItemGroupIDs.AnyWeapon, 1f }//0.5f
 		};
 
-		public Dictionary<string, float> AutoAssignedNPCGroups = new Dictionary<string, float> {
+		public Dictionary<string, float> AutoAssignedNPCGroups { get; set; } = new Dictionary<string, float> {
 			{ NPCGroupIDs.AnyHostileNPC, 1f }//0.5f
 		};
 	}

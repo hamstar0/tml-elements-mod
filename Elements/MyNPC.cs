@@ -5,6 +5,8 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 using HamstarHelpers.Services.AnimatedColor;
+using HamstarHelpers.Classes.DataStructures;
+using HamstarHelpers.Services.EntityGroups;
 using Elements.Protocols;
 
 
@@ -84,26 +86,53 @@ namespace Elements {
 
 		////////////////
 
-		private void InitializeWithSync( NPC npc ) {
-			this.InitializeElementWithSync( npc );
-			this.InitializeColorAnimation();
+		private bool InitializeWithSync( NPC npc ) {
+			if( Main.gameMenu ) {
+				return false;
+			}
+
+			this.IsInitialized = true;
+
+			if( this.InitializeElement( npc) ) {
+				this.InitializeColorAnimation();
+
+				if( Main.netMode == 2 ) {
+					NPCElementsProtocol.Broadcast( npc.whoAmI );
+				}
+			}
+
+			return true;
 		}
 
-		private void InitializeElementWithSync( NPC npc ) {
+		private bool InitializeElement( NPC npc ) {
 			var config = ElementsConfig.Instance;
-			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
 			var npcDef = new NPCDefinition( npc.type );
-
-			mynpc.IsInitialized = true;
 
 			if( config.AutoAssignedNPCs.ContainsKey( npcDef ) ) {
 				ElementDefinition elemDef = ElementDefinition.PickDefinitionForNPC( config.AutoAssignedNPCs[npcDef] );
-				mynpc.Elements.Add( elemDef );
+				this.Elements.Add( elemDef );
 			}
 
-			if( Main.netMode == 2 ) {
-				NPCElementsProtocol.Broadcast( npc.whoAmI );
+			IReadOnlySet<string> grpNames;
+			if( EntityGroups.TryGetGroupsPerNPC( npc.netID, out grpNames ) ) {
+				float autoChance = -1f;
+				foreach( string grpName in grpNames ) {
+					if( config.AutoAssignedNPCGroups.ContainsKey( grpName ) ) {
+						autoChance = config.AutoAssignedNPCGroups[grpName];
+						break;
+					}
+				}
+
+				if( autoChance != -1f ) {
+					ElementDefinition elemDef = ElementDefinition.PickDefinitionForNPC( autoChance );
+					if( elemDef != null ) {
+						this.Elements.Add( elemDef );
+						return true;
+					}
+				}
 			}
+
+			return false;
 		}
 
 		private void InitializeColorAnimation() {

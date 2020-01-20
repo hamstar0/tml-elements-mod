@@ -8,6 +8,9 @@ using Terraria.ModLoader.Config;
 using Terraria.ModLoader.IO;
 using HamstarHelpers.Helpers.Debug;
 using HamstarHelpers.Services.AnimatedColor;
+using HamstarHelpers.Services.EntityGroups;
+using HamstarHelpers.Classes.DataStructures;
+using HamstarHelpers.Helpers.TModLoader;
 
 
 namespace Elements {
@@ -50,23 +53,53 @@ namespace Elements {
 
 		////
 
-		private void Initialize( Item item ) {
-			this.InitializeElement( item );
-			this.InitializeColorAnimation();
+		private bool Initialize( Item item ) {
+			if( Main.gameMenu ) {
+				return false;
+			}
+
+			this.IsInitialized = true;
+
+			if( this.InitializeElement(item) ) {
+				this.InitializeColorAnimation();
+			}
+			return true;
 		}
 
 		////
 
-		public void InitializeElement( Item item ) {
+		private bool InitializeElement( Item item ) {
 			var config = ElementsConfig.Instance;
 			var itemDef = new ItemDefinition( item.type );
 
-			this.IsInitialized = true;
-
 			if( config.AutoAssignedItems.ContainsKey( itemDef ) ) {
 				ElementDefinition elemDef = ElementDefinition.PickDefinitionForItem( config.AutoAssignedItems[itemDef] );
-				this.Elements.Add( elemDef );
+				if( elemDef != null ) {
+					this.Elements.Add( elemDef );
+					return true;
+				}
 			}
+
+			IReadOnlySet<string> grpNames;
+			if( EntityGroups.TryGetGroupsPerItem(item.type, out grpNames) ) {
+				float autoChance = -1f;
+				foreach( string grpName in grpNames ) {
+					if( config.AutoAssignedItemGroups.ContainsKey(grpName) ) {
+						autoChance = config.AutoAssignedItemGroups[grpName];
+						break;
+					}
+				}
+
+				if( autoChance != -1f ) {
+					ElementDefinition elemDef = ElementDefinition.PickDefinitionForItem( autoChance );
+					if( elemDef != null ) {
+						this.Elements.Add( elemDef );
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		private void InitializeColorAnimation() {
@@ -86,11 +119,11 @@ namespace Elements {
 		////////////////
 
 		public override bool NeedsSaving( Item item ) {
-			return ElementsItem.CanHaveElements( item );
+			return ElementsItem.CanHaveElements( item ) && this != ModContent.GetInstance<ElementsItem>();
 		}
 
 		public override void Load( Item item, TagCompound tag ) {
-			if( !tag.ContainsKey("is_initialized") ) {
+			if( !tag.ContainsKey("is_initialized") || ElementsConfig.Instance.DebugModeReset ) {
 				return;
 			}
 
@@ -106,6 +139,9 @@ namespace Elements {
 
 				this.Elements.Add( def );
 			}
+
+			this.IsInitialized = true;
+			this.InitializeColorAnimation();
 		}
 
 		public override TagCompound Save( Item item ) {
@@ -144,6 +180,10 @@ namespace Elements {
 				string elemName = reader.ReadString();
 				this.Elements.Add( ElementDefinition.GetElementByName(elemName) );
 			}
+
+			if( this.IsInitialized ) {
+				this.InitializeColorAnimation();
+			}
 		}
 
 
@@ -151,6 +191,14 @@ namespace Elements {
 
 		public override void UpdateInventory( Item item, Player player ) {
 			if( !this.IsInitialized ) {
+Main.NewText("1");
+				this.Initialize( item );
+			}
+		}
+
+		public override void Update( Item item, ref float gravity, ref float maxFallSpeed ) {
+			if( !this.IsInitialized ) {
+Main.NewText("2");
 				this.Initialize( item );
 			}
 		}

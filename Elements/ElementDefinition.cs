@@ -9,35 +9,35 @@ using Terraria.ModLoader.Config;
 
 namespace Elements {
 	public partial class ElementDefinition {
-		public string Name;
+		public string Name { get; set; }
 
-		public Color Color;
+		public Color Color { get; set; }
 
-		public List<string> StrongAgainst = new List<string>();
+		public List<string> StrongAgainst { get; set; } = new List<string>();
 
-		public List<string> WeakAgainst = new List<string>();
-
-		[Range( 0f, 100f )]
-		[DefaultValue( 1f )]
-		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
-		public float AutoAssignNPCWeight = 1f;
+		public List<string> WeakAgainst { get; set; } = new List<string>();
 
 		[Range( 0f, 100f )]
 		[DefaultValue( 1f )]
 		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
-		public float AutoAssignItemWeight = 1f;
+		public float AutoAssignNPCWeight { get; set; } = 1f;
+
+		[Range( 0f, 100f )]
+		[DefaultValue( 1f )]
+		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
+		public float AutoAssignItemWeight { get; set; } = 1f;
 
 		[Range( 0, 280 )]
-		public int DustType;
+		public int DustType { get; set; }
 
 		[Range( 0, 200 )]
 		[DefaultValue( 20 )]
-		public int DustQuantity;
+		public int DustQuantity { get; set; }
 
 		[Range( 0f, 15f )]
 		[DefaultValue( 1f )]
 		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
-		public float DustScale;
+		public float DustScale { get; set; }
 
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 using HamstarHelpers.Helpers.XNA;
@@ -24,6 +25,27 @@ namespace Elements {
 
 			if( this.ColorAnimation != null ) {
 				XNAColorHelpers.AddGlow( this.ColorAnimation.CurrentColor, drawColor, true );
+			}
+		}
+
+
+		////////////////
+
+		public override void PostDraw( NPC npc, SpriteBatch sb, Color drawColor ) {
+			if( ElementsConfig.Instance.DebugModeInfo ) {
+				int i = 0;
+				foreach( ElementDefinition elemDef in this.Elements ) {
+					var rect = new Rectangle(
+						(int)(npc.position.X - Main.screenPosition.X) + (i*4),
+						(int)(npc.position.Y - Main.screenPosition.Y),
+						4,
+						4
+					);
+					Color color = elemDef.Color;
+
+					sb.Draw( Main.magicPixel, rect, null, color, 0f, default(Vector2), SpriteEffects.None, 1f );
+					i++;
+				}
 			}
 		}
 
