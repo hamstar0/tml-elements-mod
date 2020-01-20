@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader.Config;
 using HamstarHelpers.Classes.UI.ModConfig;
 using HamstarHelpers.Services.Configs;
@@ -39,7 +40,8 @@ namespace Elements {
 				WeakAgainst = new List<string> { "Water" },
 				DustType = 259,
 				DustQuantity = 20,
-				DustScale = 0.66f
+				DustScale = 0.66f,
+				IconTextureItem = new ItemDefinition( ItemID.LivingFireBlock )
 			},
 			new ElementDefinition {
 				Name = "Cold",
@@ -48,7 +50,8 @@ namespace Elements {
 				WeakAgainst = new List<string> { "Heat" },
 				DustType = 16,
 				DustQuantity = 20,
-				DustScale = 1f
+				DustScale = 1f,
+				IconTextureItem = new ItemDefinition( ItemID.Snowball )
 			},
 			new ElementDefinition {
 				Name = "Water",
@@ -57,7 +60,8 @@ namespace Elements {
 				WeakAgainst = new List<string> { "Cold" },
 				DustType = 33,
 				DustQuantity = 20,
-				DustScale = 1f
+				DustScale = 1f,
+				IconTextureItem = new ItemDefinition( ItemID.Sapphire )
 			},
 		};
 

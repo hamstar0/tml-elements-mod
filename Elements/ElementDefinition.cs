@@ -39,6 +39,8 @@ namespace Elements {
 		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
 		public float DustScale { get; set; }
 
+		public ItemDefinition IconTextureItem { get; set; }
+
 
 
 		////////////////
