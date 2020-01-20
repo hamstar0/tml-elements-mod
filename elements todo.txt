@@ -1,6 +1,7 @@
 v1
 -	Implement API
--	Add item tooltips
+-	Add item element tooltips
+-	@Test
 
 -	Draw visual FX for enchanted NPC
 -	Draw visual FX for enchanted item

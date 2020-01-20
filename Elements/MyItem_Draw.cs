@@ -12,7 +12,13 @@ namespace Elements {
 	partial class ElementsItem : GlobalItem {
 		public override void ModifyTooltips( Item item, List<TooltipLine> tooltips ) {
 			if( this.IsInitialized && ElementsConfig.Instance.DebugModeInfo ) {
-				var tip = new TooltipLine( this.mod, "ElementsDebug", "Elements: "+string.Join(", ", this.Elements.Select(e=>e.Name)) );
+				var tip = new TooltipLine(
+					this.mod,
+					"ElementsDebug",
+					"Elements: "+string.Join(", ", this.Elements?.Select(e=>e.Name) ?? new string[] { })
+				);
+				tip.overrideColor = Color.Cyan;
+
 				tooltips.Add( tip );
 			}
 		}
@@ -25,7 +31,11 @@ namespace Elements {
 				return null;
 			}
 
-			return XNAColorHelpers.AddGlow( this.ColorAnimation.CurrentColor, lightColor, true );
+			float brightness = XNAColorHelpers.AvgRGB( this.ColorAnimation.CurrentColor ) / 255f;
+			Color baseColor = lightColor * (1f - brightness);
+			Color color = XNAColorHelpers.AddGlow( baseColor, this.ColorAnimation.CurrentColor, false );
+			color.A = 255;
+			return color;
 		}
 
 

@@ -34,7 +34,7 @@ namespace Elements {
 		public List<ElementDefinition> Elements { get; set; } = new List<ElementDefinition> {
 			new ElementDefinition {
 				Name = "Heat",
-				Color = new Color(255, 255, 128),
+				Color = new Color(255, 128, 0),
 				StrongAgainst = new List<string> { "Cold" },
 				WeakAgainst = new List<string> { "Water" },
 				DustType = 259,

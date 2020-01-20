@@ -10,7 +10,6 @@ using HamstarHelpers.Helpers.Debug;
 using HamstarHelpers.Services.AnimatedColor;
 using HamstarHelpers.Services.EntityGroups;
 using HamstarHelpers.Classes.DataStructures;
-using HamstarHelpers.Helpers.TModLoader;
 
 
 namespace Elements {
@@ -23,7 +22,7 @@ namespace Elements {
 
 		////////////////
 
-		public override bool CloneNewInstances => false;
+		//public override bool CloneNewInstances => false;
 		public override bool InstancePerEntity => true;
 
 
@@ -42,7 +41,11 @@ namespace Elements {
 		////////////////
 
 		public override GlobalItem NewInstance( Item item ) {
-			return base.NewInstance( item );
+			var clone = (ElementsItem)base.NewInstance( item );
+			clone.IsInitialized = this.IsInitialized;
+			clone.Elements.UnionWith( this.Elements );
+
+			return clone;
 		}
 
 		public override void SetDefaults( Item item ) {
@@ -181,7 +184,7 @@ namespace Elements {
 				this.Elements.Add( ElementDefinition.GetElementByName(elemName) );
 			}
 
-			if( this.IsInitialized ) {
+			if( this.Elements.Count > 0 ) {
 				this.InitializeColorAnimation();
 			}
 		}
@@ -191,14 +194,12 @@ namespace Elements {
 
 		public override void UpdateInventory( Item item, Player player ) {
 			if( !this.IsInitialized ) {
-Main.NewText("1");
 				this.Initialize( item );
 			}
 		}
 
 		public override void Update( Item item, ref float gravity, ref float maxFallSpeed ) {
 			if( !this.IsInitialized ) {
-Main.NewText("2");
 				this.Initialize( item );
 			}
 		}
