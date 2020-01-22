@@ -28,6 +28,45 @@ namespace Elements {
 
 		////////////////
 
+		public override bool PreAI( Projectile projectile ) {
+			if( !this.IsInitialized ) {
+				if( projectile.npcProj ) {
+					NPC npc = Main.npc[projectile.owner];
+					if( npc?.active == true ) {
+						this.SetElementsFrom( projectile, npc );
+					}
+				} else {
+					Player plr = Main.player[ projectile.owner ];
+					if( plr?.active == true ) {
+						Item heldItem = plr.HeldItem;
+						if( heldItem?.active == true && !heldItem.IsAir ) {
+							this.SetElementsFrom( projectile, heldItem );
+						}
+					}
+				}
+			}
+
+			return base.PreAI( projectile );
+		}
+
+
+
+		////////////////
+
+		public void SetElementsFrom( Projectile proj, Item item ) {
+			var myitem = item.GetGlobalItem<ElementsItem>();
+			if( myitem.IsInitialized ) {
+				this.SetElements( proj, myitem.Elements );
+			}
+		}
+		
+		public void SetElementsFrom( Projectile proj, NPC npc ) {
+			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
+			if( mynpc.IsInitialized ) {
+				this.SetElements( proj, mynpc.Elements );
+			}
+		}
+
 		public void SetElements( Projectile proj, ISet<ElementDefinition> elements ) {
 			var myproj = proj.GetGlobalProjectile<ElementsProjectile>();
 
