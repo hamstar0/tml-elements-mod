@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 using HamstarHelpers.Helpers.XNA;
+using HamstarHelpers.Helpers.Debug;
 
 
 namespace Elements {
@@ -24,7 +25,7 @@ namespace Elements {
 			}
 
 			if( this.ColorAnimation != null ) {
-				XNAColorHelpers.AddGlow( this.ColorAnimation.CurrentColor, drawColor, true );
+				XNAColorHelpers.AddGlow( drawColor, this.ColorAnimation.CurrentColor, true );
 			}
 		}
 

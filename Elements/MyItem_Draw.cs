@@ -1,26 +1,32 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using HamstarHelpers.Helpers.Debug;
+using HamstarHelpers.Helpers.Items.Attributes;
 
 
 namespace Elements {
 	partial class ElementsItem : GlobalItem {
 		public override void ModifyTooltips( Item item, List<TooltipLine> tooltips ) {
-			if( this.IsInitialized && ElementsConfig.Instance.DebugModeInfo ) {
+			//"Elements: " + string.Join( ", ", this.Elements?.Select( e => e.Name ) ?? new string[] { } )
+			if( !this.IsInitialized || this.Elements == null ) {
+				return;
+			}
+
+			int i = 0;
+			foreach( ElementDefinition elemDef in this.Elements ) {
 				var tip = new TooltipLine(
 					this.mod,
-					"ElementsDebug",
-					"Elements: " + string.Join( ", ", this.Elements?.Select( e => e.Name ) ?? new string[] { } )
+					"Elements_"+i,
+					"Has "+elemDef.Name+" affinity. Strong against "+string.Join(", ", elemDef.StrongAgainst)+"."
 				);
-				tip.overrideColor = Color.Cyan;
+				tip.overrideColor = Color.Lerp( elemDef.Color, Color.White, 0.25f );
 
-				tooltips.Add( tip );
+				ItemInformationAttributeHelpers.ApplyTooltipAt( tooltips, tip );
+				i++;
 			}
 		}
 

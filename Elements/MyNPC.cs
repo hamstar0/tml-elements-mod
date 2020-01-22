@@ -28,19 +28,23 @@ namespace Elements {
 					out int attackAbsorb ) {
 			absorbElements = new HashSet<ElementDefinition>();
 			afflictElements = new HashSet<ElementDefinition>();
+
+			var config = ElementsConfig.Instance;
 			float baseDamage = damage;
 			float newDamage = damage;
 
 			foreach( ElementDefinition itemElemDef in itemDefs ) {
 				foreach( ElementDefinition npcElemDef in npcDefs ) {
 					float dmg;
-					
+
 					if( itemElemDef.WeakAgainst.Contains( npcElemDef.Name ) ) {
 						afflictElements.Add( itemElemDef );
-						dmg = baseDamage * ElementsConfig.Instance.ElementWeaknessDamageMultiplier;
+						dmg = baseDamage * config.ElementWeaknessDamageMultiplier;
 					} else if( itemElemDef.StrongAgainst.Contains( npcElemDef.Name ) ) {
 						absorbElements.Add( itemElemDef );
-						dmg = baseDamage * ElementsConfig.Instance.ElementStrengthDamageMultiplier;
+						dmg = baseDamage * config.ElementStrengthDamageMultiplier;
+					} else if( itemElemDef.Name.Equals( npcElemDef.Name ) ) {
+						dmg = baseDamage * config.ElementEqualDamageMultiplier;
 					} else {
 						continue;
 					}
@@ -54,7 +58,8 @@ namespace Elements {
 				: damage < newDamage
 				? 1
 				: 0;
-			return (int)newDamage;
+
+			return (int)Math.Max( newDamage, 0 );
 		}
 
 
@@ -140,7 +145,7 @@ namespace Elements {
 
 			foreach( ElementDefinition elemDef in this.Elements ) {
 				colors.Add( elemDef.Color );
-				colors.Add( Color.Transparent );
+				colors.Add( Color.Black );
 			}
 
 			if( colors.Count > 0 ) {
