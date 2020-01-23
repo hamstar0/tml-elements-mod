@@ -5,18 +5,12 @@ using Terraria;
 using Terraria.ModLoader;
 using HamstarHelpers.Helpers.XNA;
 using HamstarHelpers.Helpers.Debug;
+using Terraria.ID;
 
 
 namespace Elements {
 	partial class ElementsNPC : GlobalNPC {
 		public override void DrawEffects( NPC npc, ref Color drawColor ) {
-			if( this.AbsorbAnimation > 0 ) {
-				foreach( ElementDefinition elemDef in this.AbsorbedElements ) {
-					this.DrawElementAbsorb( npc, (float)this.AbsorbAnimation / 30f, elemDef, ref drawColor );
-				}
-				this.AbsorbAnimation--;
-			}
-
 			if( this.AfflictedElements.Count > 0 ) {
 				foreach( ElementDefinition elemDef in this.AfflictedElements ) {
 					this.DrawElementAfflict( npc, elemDef );
@@ -25,7 +19,10 @@ namespace Elements {
 			}
 
 			if( this.ColorAnimation != null ) {
-				XNAColorHelpers.AddGlow( drawColor, this.ColorAnimation.CurrentColor, true );
+				Color glowColor = XNAColorHelpers.AddGlow( Color.Transparent, this.ColorAnimation.CurrentColor, true );
+				glowColor *= 0.35f;
+
+				this.DrawGlow( npc, glowColor );
 			}
 		}
 
@@ -48,14 +45,48 @@ namespace Elements {
 					i++;
 				}
 			}
+
+			if( this.AbsorbAnimation > 0 ) {
+				Color color = Color.Transparent;
+				float percent = (float)this.AbsorbAnimation / 120f;
+
+				foreach( ElementDefinition elemDef in this.AbsorbedElements ) {
+					Color newColor = elemDef.Color;
+					newColor.A = 255;
+
+					color = Color.Lerp( color, newColor, percent );
+				}
+
+DebugHelpers.Print("post hurt", color.ToString()+", percent: "+percent);
+				this.DrawGlow( npc, color );
+
+				this.AbsorbAnimation--;
+			}
 		}
 
 
 		////////////////
+		
+		private void DrawGlow( NPC npc, Color color ) {
+			Texture2D tex = ModContent.GetTexture( "Terraria/Projectile_" + ProjectileID.StardustTowerMark );
+			float npcDim = ( npc.width + npc.height ) / 2;
+			float scale = ( npcDim / (float)tex.Width ) * 2.25f;
 
-		private void DrawElementAbsorb( NPC npc, float amount, ElementDefinition elemDef, ref Color drawColor ) {
-			drawColor = Color.Lerp( drawColor, elemDef.Color, amount );
+			Main.spriteBatch.Draw(
+				texture: tex,
+				position: ( npc.Center - Main.screenPosition ) - ( new Vector2( tex.Width / 2, tex.Height / 2 ) * scale ),
+				sourceRectangle: null,
+				color: color,
+				rotation: 0f,
+				origin: default( Vector2 ),//new Vector2(tex.Width / 2, tex.Height / 2) * scale,
+				scale: scale,
+				effects: SpriteEffects.None,
+				layerDepth: 1f
+			);
 		}
+
+
+		////////////////
 
 		private void DrawElementAfflict( NPC npc, ElementDefinition elemDef ) {
 			for( int i=0; i<elemDef.DustQuantity; i++ ) {

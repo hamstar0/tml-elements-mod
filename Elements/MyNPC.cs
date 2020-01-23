@@ -4,9 +4,10 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
-using HamstarHelpers.Services.AnimatedColor;
 using HamstarHelpers.Classes.DataStructures;
+using HamstarHelpers.Services.AnimatedColor;
 using HamstarHelpers.Services.EntityGroups;
+using HamstarHelpers.Services.Hooks.LoadHooks;
 using Elements.Protocols;
 
 
@@ -90,23 +91,25 @@ namespace Elements {
 
 
 		////////////////
+		
+		 private bool AwaitsInitialization = false;
 
-		private bool InitializeWithSync( NPC npc ) {
-			if( Main.gameMenu ) {
-				return false;
-			}
+		private void InitializeWithSync( NPC npc ) {
+			if( this.AwaitsInitialization || this.IsInitialized || !ElementsNPC.CanHaveElements(npc) ) { return; }
+			this.AwaitsInitialization = true;
 
-			this.IsInitialized = true;
+			LoadHooks.AddPostWorldLoadOnceHook( () => {
+				this.IsInitialized = true;
+				this.AwaitsInitialization = false;
 
-			if( this.InitializeElement( npc) ) {
-				this.InitializeColorAnimation();
+				if( this.InitializeElement( npc ) ) {
+					this.InitializeColorAnimation();
 
-				if( Main.netMode == 2 ) {
-					NPCElementsProtocol.Broadcast( npc.whoAmI );
+					if( Main.netMode == 2 ) {
+						NPCElementsProtocol.Broadcast( npc.whoAmI );
+					}
 				}
-			}
-
-			return true;
+			} );
 		}
 
 		private bool InitializeElement( NPC npc ) {
@@ -145,7 +148,7 @@ namespace Elements {
 
 			foreach( ElementDefinition elemDef in this.Elements ) {
 				colors.Add( elemDef.Color );
-				colors.Add( Color.Black );
+				colors.Add( Color.Transparent );
 			}
 
 			if( colors.Count > 0 ) {
@@ -182,7 +185,7 @@ namespace Elements {
 			);
 			
 			if( attackWeakness < 0 ) {
-				this.AbsorbAnimation = 30;
+				this.AbsorbAnimation = 120;
 			}
 		}
 
@@ -201,7 +204,7 @@ namespace Elements {
 			);
 
 			if( attackWeakness < 0 ) {
-				this.AbsorbAnimation = 30;
+				this.AbsorbAnimation = 120;
 			}
 		}
 	}

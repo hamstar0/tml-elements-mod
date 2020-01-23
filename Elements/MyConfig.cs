@@ -35,7 +35,7 @@ namespace Elements {
 		public List<ElementDefinition> Elements { get; set; } = new List<ElementDefinition> {
 			new ElementDefinition {
 				Name = "Heat",
-				Color = new Color(255, 128, 0),
+				Color = Color.Red,
 				StrongAgainst = new List<string> { "Cold" },
 				WeakAgainst = new List<string> { "Water" },
 				DustType = 259,
@@ -45,7 +45,7 @@ namespace Elements {
 			},
 			new ElementDefinition {
 				Name = "Cold",
-				Color = Color.Cyan,
+				Color = new Color(128, 128, 128),
 				StrongAgainst = new List<string> { "Water" },
 				WeakAgainst = new List<string> { "Heat" },
 				DustType = 16,
@@ -55,7 +55,7 @@ namespace Elements {
 			},
 			new ElementDefinition {
 				Name = "Water",
-				Color = Color.Blue,
+				Color = new Color(16, 16, 255),
 				StrongAgainst = new List<string> { "Heat" },
 				WeakAgainst = new List<string> { "Cold" },
 				DustType = 33,

@@ -3,7 +3,7 @@ v1
 -	Implement API
 -	Add item element tooltips
 -	Draw visual FX for enchanted NPC
-
+Paypal $5
 -	Draw visual FX for enchanted item
 -	Draw visual FX for hit NPC
 	-	Define dusts for each element type

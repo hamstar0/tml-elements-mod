@@ -10,6 +10,7 @@ using HamstarHelpers.Helpers.Debug;
 using HamstarHelpers.Services.AnimatedColor;
 using HamstarHelpers.Services.EntityGroups;
 using HamstarHelpers.Classes.DataStructures;
+using HamstarHelpers.Services.Hooks.LoadHooks;
 
 
 namespace Elements {
@@ -48,25 +49,22 @@ namespace Elements {
 			return clone;
 		}
 
-		public override void SetDefaults( Item item ) {
-			if( !this.IsInitialized ) {
-				this.Initialize( item );
-			}
-		}
-
 		////
 
-		private bool Initialize( Item item ) {
-			if( Main.gameMenu ) {
-				return false;
-			}
+		 private bool AwaitsInitialization = false;
 
-			this.IsInitialized = true;
+		private void Initialize( Item item ) {
+			if( this.AwaitsInitialization || this.IsInitialized || !ElementsItem.CanHaveElements(item) ) { return; }
+			this.AwaitsInitialization = true;
 
-			if( this.InitializeElement(item) ) {
-				this.InitializeColorAnimation();
-			}
-			return true;
+			LoadHooks.AddWorldLoadOnceHook( () => {
+				this.AwaitsInitialization = false;
+				this.IsInitialized = true;
+
+				if( this.InitializeElement(item) && !Main.dedServ ) {
+					this.InitializeColorAnimation();
+				}
+			} );
 		}
 
 		////
@@ -122,18 +120,30 @@ namespace Elements {
 		////////////////
 
 		public override bool NeedsSaving( Item item ) {
-			return ElementsItem.CanHaveElements( item ) && this != ModContent.GetInstance<ElementsItem>();
+			return ElementsItem.CanHaveElements( item )
+				&& this != ModContent.GetInstance<ElementsItem>();
 		}
 
+
 		public override void Load( Item item, TagCompound tag ) {
-			if( !tag.ContainsKey("is_initialized") || ElementsConfig.Instance.DebugModeReset ) {
+			this.Elements.Clear();
+			this.IsInitialized = false;
+
+			if( !tag.ContainsKey( "elem_count" ) ) {
 				return;
 			}
 
-			int elemDefCount = tag.GetInt( "elem_def_count" );
+			int elemDefCount = tag.GetInt( "elem_count" );
+
+			if( ElementsConfig.Instance.DebugModeInfo ) {
+				LogHelpers.Log( item.HoverName+" with # elements: "+elemDefCount+" (reset? "+ElementsConfig.Instance.DebugModeReset+")" );
+			}
+			if( ElementsConfig.Instance.DebugModeReset ) {
+				return;
+			}
 
 			for( int i=0; i<elemDefCount; i++ ) {
-				string defName = tag.GetString( "elem_def_" + i );
+				string defName = tag.GetString( "elem_" + i );
 				ElementDefinition def = ElementDefinition.GetElementByName( defName );
 				if( def == null ) {
 					LogHelpers.Warn( "Missing element definition "+defName );
@@ -144,23 +154,26 @@ namespace Elements {
 			}
 
 			this.IsInitialized = true;
-			this.InitializeColorAnimation();
+
+			if( this.Elements.Count > 0 && !Main.dedServ ) {
+				this.InitializeColorAnimation();
+			}
 		}
 
 		public override TagCompound Save( Item item ) {
 			var tag = new TagCompound {
-				{ "is_initialized", this.IsInitialized },
-				{ "elem_def_count", this.Elements.Count }
+				{ "elem_count", this.Elements.Count }
 			};
 
 			int i = 0;
 			foreach( ElementDefinition elemDef in this.Elements ) {
-				tag[ "elem_def_"+i ] = elemDef.Name;
+				tag["elem_" + i ] = elemDef.Name;
 				i++;
 			}
 
 			return tag;
 		}
+
 
 		////////////////
 
