@@ -99,17 +99,19 @@ namespace Elements {
 				this.IsInitialized = true;
 				this.AwaitsInitialization = false;
 
-				if( this.InitializeElement( npc ) ) {
-					this.InitializeColorAnimation();
+				bool? willAutoInit = ElementsAPI.PreNPCInitialize( npc );
 
+				if( (willAutoInit.HasValue && willAutoInit.Value) || this.AutoInitializeElement( npc ) ) {
 					if( Main.netMode == 2 ) {
 						NPCElementsProtocol.Broadcast( npc.whoAmI );
+					} else {
+						this.InitializeColorAnimation();
 					}
 				}
 			} );
 		}
 
-		private bool InitializeElement( NPC npc ) {
+		private bool AutoInitializeElement( NPC npc ) {
 			var config = ElementsConfig.Instance;
 			var npcDef = new NPCDefinition( npc.type );
 
@@ -144,7 +146,7 @@ namespace Elements {
 			var colors = new List<Color>();
 
 			foreach( ElementDefinition elemDef in this.Elements ) {
-				colors.Add( elemDef.Color );
+				colors.Add( elemDef.GlowColor );
 				colors.Add( Color.Transparent );
 			}
 

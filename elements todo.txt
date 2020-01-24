@@ -1,7 +1,9 @@
 v1
 -	Add inbox message explaining configuration
--	Implement API
 
+-	Implement API
+	-	NPC initialization
+	-	Item initialization
 -	Add item element tooltips
 -	Draw visual FX for enchanted NPC
 -	Draw visual FX for enchanted item

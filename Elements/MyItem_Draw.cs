@@ -23,7 +23,7 @@ namespace Elements {
 					"Elements_"+i,
 					"Has "+elemDef.Name+" affinity. Strong against "+string.Join(", ", elemDef.StrongAgainst)+"."
 				);
-				tip.overrideColor = Color.Lerp( elemDef.Color, Color.White, 0.25f );
+				tip.overrideColor = Color.Lerp( elemDef.IconColor, Color.White, 0.25f );
 
 				ItemInformationAttributeHelpers.ApplyTooltipAt( tooltips, tip );
 				i++;

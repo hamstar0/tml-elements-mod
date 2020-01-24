@@ -60,16 +60,20 @@ namespace Elements {
 			LoadHooks.AddWorldLoadOnceHook( () => {
 				this.AwaitsInitialization = false;
 				this.IsInitialized = true;
+				
+				bool? willAutoInit = ElementsAPI.PreItemInitialize( item );
 
-				if( this.InitializeElement(item) && !Main.dedServ ) {
-					this.InitializeColorAnimation();
+				if( (willAutoInit.HasValue && willAutoInit.Value) || this.AutoInitializeElement(item) ) {
+					if( !Main.dedServ ) {
+						this.InitializeColorAnimation();
+					}
 				}
 			} );
 		}
 
 		////
 
-		private bool InitializeElement( Item item ) {
+		private bool AutoInitializeElement( Item item ) {
 			var config = ElementsConfig.Instance;
 			var itemDef = new ItemDefinition( item.type );
 
@@ -107,7 +111,7 @@ namespace Elements {
 			var colors = new List<Color>();
 
 			foreach( ElementDefinition elemDef in this.Elements ) {
-				colors.Add( elemDef.Color );
+				colors.Add( elemDef.GlowColor );
 				colors.Add( Color.Transparent );
 			}
 

@@ -39,7 +39,7 @@ namespace Elements {
 						4,
 						4
 					);
-					Color color = elemDef.Color;
+					Color color = elemDef.IconColor;
 
 					sb.Draw( Main.magicPixel, rect, null, color, 0f, default(Vector2), SpriteEffects.None, 1f );
 					i++;
@@ -52,7 +52,7 @@ namespace Elements {
 				percent *= 0.75f;
 				
 				foreach( ElementDefinition elemDef in this.AbsorbedElements ) {
-					Color newColor = elemDef.Color;
+					Color newColor = elemDef.GlowColor;
 					newColor.A = 255;
 
 					color = Color.Lerp( color, newColor, percent );
@@ -90,7 +90,7 @@ namespace Elements {
 
 		private void DrawElementAfflict( NPC npc, ElementDefinition elemDef ) {
 			for( int i=0; i<elemDef.DustQuantity; i++ ) {
-				Dust.NewDust( npc.position, npc.width, npc.height, elemDef.DustType, 0f, 0f, 0, elemDef.Color, elemDef.DustScale );
+				Dust.NewDust( npc.position, npc.width, npc.height, elemDef.DustType, 0f, 0f, 0, elemDef.DustColor, elemDef.DustScale );
 			}
 		}
 	}
