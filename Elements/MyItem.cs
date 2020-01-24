@@ -135,7 +135,7 @@ namespace Elements {
 
 			int elemDefCount = tag.GetInt( "elem_count" );
 
-			if( ElementsConfig.Instance.DebugModeInfo ) {
+			if( ElementsConfig.Instance.DebugModeInfo && elemDefCount > 0 ) {
 				LogHelpers.Log( item.HoverName+" with # elements: "+elemDefCount+" (reset? "+ElementsConfig.Instance.DebugModeReset+")" );
 			}
 			if( ElementsConfig.Instance.DebugModeReset ) {

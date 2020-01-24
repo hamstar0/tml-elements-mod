@@ -14,7 +14,7 @@ using Elements.Protocols;
 namespace Elements {
 	partial class ElementsNPC : GlobalNPC {
 		public static bool CanHaveElements( NPC npc ) {
-			return npc?.active != true && (npc.townNPC || npc.dontTakeDamage);
+			return npc?.active == true && !npc.townNPC && !npc.dontTakeDamage;
 		}
 
 
@@ -25,8 +25,7 @@ namespace Elements {
 					ISet<ElementDefinition> itemDefs,
 					ISet<ElementDefinition> npcDefs,
 					out ISet<ElementDefinition> absorbElements,
-					out ISet<ElementDefinition> afflictElements,
-					out int attackAbsorb ) {
+					out ISet<ElementDefinition> afflictElements ) {
 			absorbElements = new HashSet<ElementDefinition>();
 			afflictElements = new HashSet<ElementDefinition>();
 
@@ -38,27 +37,25 @@ namespace Elements {
 				foreach( ElementDefinition npcElemDef in npcDefs ) {
 					float dmg;
 
-					if( itemElemDef.WeakAgainst.Contains( npcElemDef.Name ) ) {
+					if( npcElemDef.WeakAgainst.Contains(itemElemDef.Name) ) {
+//Main.NewText( "0a npc of "+npcElemDef.Name+" afflicts against "+itemElemDef.Name );
 						afflictElements.Add( itemElemDef );
-						dmg = baseDamage * config.ElementWeaknessDamageMultiplier;
-					} else if( itemElemDef.StrongAgainst.Contains( npcElemDef.Name ) ) {
+						dmg = baseDamage * config.ElementAfflictDamageMultiplier;
+					} else if( npcElemDef.StrongAgainst.Contains(itemElemDef.Name) ) {
 						absorbElements.Add( itemElemDef );
-						dmg = baseDamage * config.ElementStrengthDamageMultiplier;
-					} else if( itemElemDef.Name.Equals( npcElemDef.Name ) ) {
+						dmg = baseDamage * config.ElementAbsorbDamageMultiplier;
+//Main.NewText( "0BB npc of "+npcElemDef.Name+" absorbs against "+itemElemDef.Name+" ("+absorbElements.Count+")" );
+					} else if( npcElemDef.Name.Equals(itemElemDef.Name) ) {
+//Main.NewText( "0c npc of "+npcElemDef.Name+" neutral against "+itemElemDef.Name );
 						dmg = baseDamage * config.ElementEqualDamageMultiplier;
 					} else {
+//Main.NewText( "0d npc of "+npcElemDef.Name+" ? against "+itemElemDef.Name );
 						continue;
 					}
 
 					newDamage += dmg - baseDamage;
 				}
 			}
-
-			attackAbsorb = damage > newDamage
-				? -1
-				: damage < newDamage
-				? 1
-				: 0;
 
 			return (int)Math.Max( newDamage, 0 );
 		}
@@ -171,40 +168,37 @@ namespace Elements {
 		////////////////
 
 		public override void ModifyHitByItem( NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit ) {
-			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
 			var myitem = item.GetGlobalItem<ElementsItem>();
-			int attackWeakness;
+			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
 
-			damage = ElementsNPC.ComputeDamage(
-				damage,
-				myitem.Elements,
-				mynpc.Elements,
-				out this.AbsorbedElements,
-				out this.AfflictedElements,
-				out attackWeakness
-			);
-			
-			if( attackWeakness < 0 ) {
-				this.AbsorbAnimation = 120;
-			}
+			this.ApplyHit( ref damage, myitem.Elements, mynpc.Elements );
 		}
 
 		public override void ModifyHitByProjectile( NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection ) {
-			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
 			var myproj = projectile.GetGlobalProjectile<ElementsProjectile>();
-			int attackWeakness;
-			
+			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
+
+			this.ApplyHit( ref damage, myproj.Elements, mynpc.Elements );
+		}
+
+		////
+
+		private void ApplyHit( ref int damage, ISet<ElementDefinition> attackElements, ISet<ElementDefinition> targetElements ) {
+			ISet<ElementDefinition> absorbedElems, afflictedElems;
+
 			damage = ElementsNPC.ComputeDamage(
 				damage,
-				myproj.Elements,
-				mynpc.Elements,
-				out this.AbsorbedElements,
-				out this.AfflictedElements,
-				out attackWeakness
+				attackElements,
+				targetElements,
+				out absorbedElems,
+				out afflictedElems
 			);
 
-			if( attackWeakness < 0 ) {
+			if( absorbedElems.Count > 0 ) {
+				this.AbsorbedElements = absorbedElems;
 				this.AbsorbAnimation = 120;
+			} else if( afflictedElems.Count > 0 ) {
+				this.AfflictedElements = afflictedElems;
 			}
 		}
 	}

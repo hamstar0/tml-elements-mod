@@ -49,7 +49,8 @@ namespace Elements {
 			if( this.AbsorbAnimation > 0 ) {
 				Color color = Color.Transparent;
 				float percent = (float)this.AbsorbAnimation / 120f;
-
+				percent *= 0.75f;
+				
 				foreach( ElementDefinition elemDef in this.AbsorbedElements ) {
 					Color newColor = elemDef.Color;
 					newColor.A = 255;
@@ -57,7 +58,6 @@ namespace Elements {
 					color = Color.Lerp( color, newColor, percent );
 				}
 
-DebugHelpers.Print("post hurt", color.ToString()+", percent: "+percent);
 				this.DrawGlow( npc, color );
 
 				this.AbsorbAnimation--;

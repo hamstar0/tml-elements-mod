@@ -71,7 +71,7 @@ namespace Elements {
 		[Range( 0f, 100f )]
 		[DefaultValue( 2f )]
 		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
-		public float ElementStrengthDamageMultiplier { get; set; } = 2f;
+		public float ElementAfflictDamageMultiplier { get; set; } = 2f;
 
 		[Range( 0f, 100f )]
 		[DefaultValue( 0f )]
@@ -81,7 +81,7 @@ namespace Elements {
 		[Range( 0f, 100f )]
 		[DefaultValue( 0.25f )]
 		[CustomModConfigItem( typeof( MyFloatInputElement ) )]
-		public float ElementWeaknessDamageMultiplier { get; set; } = 0.25f;
+		public float ElementAbsorbDamageMultiplier { get; set; } = 0.25f;
 
 
 		////////////////
