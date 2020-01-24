@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using HamstarHelpers.Helpers.Debug;
-using HamstarHelpers.Services.AnimatedColor;
 using HamstarHelpers.Services.Hooks.LoadHooks;
 
 
@@ -28,11 +26,6 @@ namespace Elements {
 
 		public bool IsInitialized { get; private set; } = false;
 		public ISet<ElementDefinition> Elements { get; private set; } = new HashSet<ElementDefinition>();
-
-
-		////////////////
-
-		private AnimatedColors ColorAnimation;
 
 
 
@@ -58,27 +51,12 @@ namespace Elements {
 				this.AwaitsInitialization = false;
 				this.IsInitialized = true;
 				
-				bool? willAutoInit = ElementsAPI.PreItemInitialize( item );
+				bool? skipAutoInit = ElementsAPI.PreItemInitialize( item );
 
-				if( (willAutoInit.HasValue && willAutoInit.Value) || this.AutoInitializeElement(item) ) {
-					if( !Main.dedServ ) {
-						this.InitializeColorAnimation();
-					}
+				if( !skipAutoInit.HasValue || !skipAutoInit.Value ) {
+					this.AutoInitializeElement( item );
 				}
 			} );
-		}
-
-		private void InitializeColorAnimation() {
-			var colors = new List<Color>();
-
-			foreach( ElementDefinition elemDef in this.Elements ) {
-				colors.Add( elemDef.GlowColor );
-				colors.Add( Color.Transparent );
-			}
-
-			if( colors.Count > 0 ) {
-				this.ColorAnimation = AnimatedColors.Create( 15, colors.ToArray() );
-			}
 		}
 
 
@@ -120,9 +98,9 @@ namespace Elements {
 
 			this.IsInitialized = true;
 
-			if( this.Elements.Count > 0 && !Main.dedServ ) {
-				this.InitializeColorAnimation();
-			}
+			//if( this.Elements.Count > 0 && !Main.dedServ ) {
+			//	this.InitializeColorAnimation();
+			//}
 		}
 
 		public override TagCompound Save( Item item ) {
@@ -162,9 +140,9 @@ namespace Elements {
 				this.Elements.Add( ElementDefinition.GetElementByName(elemName) );
 			}
 
-			if( this.Elements.Count > 0 ) {
-				this.InitializeColorAnimation();
-			}
+			//if( this.Elements.Count > 0 ) {
+			//	this.InitializeColorAnimation();
+			//}
 		}
 
 

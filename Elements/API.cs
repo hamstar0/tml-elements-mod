@@ -7,10 +7,20 @@ using HamstarHelpers.Classes.Loadable;
 
 namespace Elements {
 	public class ElementsAPI : ILoadable {
+		/// <summary>
+		/// Adds an item initializer. Return `false` to abort all initialization and auto-initialization, `null` to use defaults
+		/// (auto-initialize, if no other initializers interject), and `true` only skip auto-initialization.
+		/// </summary>
+		/// <param name="initializer"></param>
 		public static void AddItemInitializer( Func<Item, bool?> initializer ) {
 			ModContent.GetInstance<ElementsAPI>().PreItemInitializers.Add( initializer );
 		}
 
+		/// <summary>
+		/// Adds an NPC initializer. Return `false` to abort all initialization and auto-initialization, `null` to use defaults
+		/// (auto-initialize, if no other initializers interject), and `true` only skip auto-initialization.
+		/// </summary>
+		/// <param name="initializer"></param>
 		public static void AddNPCInitializer( Func<NPC, bool?> initializer ) {
 			ModContent.GetInstance<ElementsAPI>().PreNPCInitializers.Add( initializer );
 		}

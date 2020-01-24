@@ -15,49 +15,6 @@ namespace Elements {
 		}
 
 
-		////////////////
-
-		public static int ComputeDamage(
-					int damage,
-					ISet<ElementDefinition> itemDefs,
-					ISet<ElementDefinition> npcDefs,
-					out ISet<ElementDefinition> absorbElements,
-					out ISet<ElementDefinition> afflictElements ) {
-			absorbElements = new HashSet<ElementDefinition>();
-			afflictElements = new HashSet<ElementDefinition>();
-
-			var config = ElementsConfig.Instance;
-			float baseDamage = damage;
-			float newDamage = damage;
-
-			foreach( ElementDefinition itemElemDef in itemDefs ) {
-				foreach( ElementDefinition npcElemDef in npcDefs ) {
-					float dmg;
-
-					if( npcElemDef.WeakAgainst.Contains(itemElemDef.Name) ) {
-//Main.NewText( "0a npc of "+npcElemDef.Name+" afflicts against "+itemElemDef.Name );
-						afflictElements.Add( itemElemDef );
-						dmg = baseDamage * config.ElementAfflictDamageMultiplier;
-					} else if( npcElemDef.StrongAgainst.Contains(itemElemDef.Name) ) {
-						absorbElements.Add( itemElemDef );
-						dmg = baseDamage * config.ElementAbsorbDamageMultiplier;
-//Main.NewText( "0BB npc of "+npcElemDef.Name+" absorbs against "+itemElemDef.Name+" ("+absorbElements.Count+")" );
-					} else if( npcElemDef.Name.Equals(itemElemDef.Name) ) {
-//Main.NewText( "0c npc of "+npcElemDef.Name+" neutral against "+itemElemDef.Name );
-						dmg = baseDamage * config.ElementEqualDamageMultiplier;
-					} else {
-//Main.NewText( "0d npc of "+npcElemDef.Name+" ? against "+itemElemDef.Name );
-						continue;
-					}
-
-					newDamage += dmg - baseDamage;
-				}
-			}
-
-			return (int)Math.Max( newDamage, 0 );
-		}
-
-
 
 		////////////////
 
@@ -96,9 +53,9 @@ namespace Elements {
 				this.IsInitialized = true;
 				this.AwaitsInitialization = false;
 
-				bool? willAutoInit = ElementsAPI.PreNPCInitialize( npc );
+				bool? skipAutoInit = ElementsAPI.PreNPCInitialize( npc );
 
-				if( (willAutoInit.HasValue && willAutoInit.Value) || this.AutoInitializeElement( npc ) ) {
+				if( (!skipAutoInit.HasValue || !skipAutoInit.Value) || this.AutoInitializeElement(npc) ) {
 					if( Main.netMode == 2 ) {
 						NPCElementsProtocol.Broadcast( npc.whoAmI );
 					} else {
