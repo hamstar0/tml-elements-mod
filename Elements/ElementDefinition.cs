@@ -31,12 +31,12 @@ namespace Elements {
 		[Range( 0f, 100f )]
 		[DefaultValue( 1f )]
 		[CustomModConfigItem( typeof(MyFloatInputElement) )]
-		public float AutoAssignNPCWeight { get; set; } = 1f;
+		public float AutoAssignItemWeight { get; set; } = 1f;
 
 		[Range( 0f, 100f )]
 		[DefaultValue( 1f )]
 		[CustomModConfigItem( typeof(MyFloatInputElement) )]
-		public float AutoAssignItemWeight { get; set; } = 1f;
+		public float AutoAssignNPCWeight { get; set; } = 1f;
 
 		[Range( 0, 280 )]
 		public int DustType { get; set; }

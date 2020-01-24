@@ -1,5 +1,6 @@
 v1
 -	Add inbox message explaining configuration
+-	Add 'physical' element
 
 -	Implement API
 	-	NPC initialization
