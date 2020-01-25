@@ -2,10 +2,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using HamstarHelpers.Helpers.XNA;
 using HamstarHelpers.Helpers.Debug;
-using Terraria.ID;
 
 
 namespace Elements {
@@ -20,7 +20,7 @@ namespace Elements {
 
 			if( this.ColorAnimation != null ) {
 				Color glowColor = XNAColorHelpers.AddGlow( Color.Transparent, this.ColorAnimation.CurrentColor, true );
-				glowColor *= 0.35f;
+				glowColor *= 0.75f;
 
 				this.DrawGlow( npc, glowColor );
 			}

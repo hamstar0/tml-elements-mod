@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -12,7 +13,7 @@ namespace Elements {
 	partial class ElementsItem : GlobalItem {
 		public override void ModifyTooltips( Item item, List<TooltipLine> tooltips ) {
 			//"Elements: " + string.Join( ", ", this.Elements?.Select( e => e.Name ) ?? new string[] { } )
-			if( !this.IsInitialized || this.Elements == null ) {
+			if( !this.IsInitialized || this.Elements == null || this.Elements.Count == 0 ) {
 				return;
 			}
 
@@ -25,7 +26,12 @@ namespace Elements {
 				);
 				tip.overrideColor = Color.Lerp( elemDef.IconColor, Color.White, 0.25f );
 
-				ItemInformationAttributeHelpers.ApplyTooltipAt( tooltips, tip );
+				if( !ItemInformationAttributeHelpers.ApplyTooltipAt(tooltips, tip, VanillaTooltipName.Tooltip) ) {
+					if( !ItemInformationAttributeHelpers.ApplyTooltipAt(tooltips, tip, VanillaTooltipName.PrefixDamage) ) {
+						ItemInformationAttributeHelpers.ApplyTooltipAt( tooltips, tip, VanillaTooltipName.Knockback );
+						//	tooltips.Add( tip );
+					}
+				}
 				i++;
 			}
 		}

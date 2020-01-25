@@ -1,0 +1,5 @@
+# Elements
+
+Adds elemental affinities for items and mobs. Element types, strengths, and weaknesses may be configured, including to specify whether items or mobs automatically receive them at random. Also features a modder's API for better control over assigning elements to items or mobs.
+
+https://github.com/hamstar0/tml-elements-mod
