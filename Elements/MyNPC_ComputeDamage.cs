@@ -23,6 +23,9 @@ namespace Elements {
 			if( itemElements.Count == 0 ) {
 				itemElements = new HashSet<ElementDefinition> { ElementsConfig.PhysicalElement };
 			}
+			if( npcElements.Count == 0 ) {
+				npcElements = new HashSet<ElementDefinition> { ElementsConfig.PhysicalElement };
+			}
 
 			foreach( ElementDefinition itemElemDef in itemElements ) {
 				foreach( ElementDefinition npcElemDef in npcElements ) {

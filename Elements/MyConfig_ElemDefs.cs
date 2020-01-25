@@ -46,8 +46,8 @@ namespace Elements {
 			},
 			new ElementDefinition {
 				Name = ElementDefinition.ColdName,
-				IconColor = Color.White,
-				GlowColor = new Color(128, 128, 128),
+				IconColor = new Color(160, 200, 255),
+				GlowColor = new Color(160, 200, 255),
 				StrongAgainst = new List<string> { ElementDefinition.WaterName },
 				WeakAgainst = new List<string> { ElementDefinition.HeatName, ElementDefinition.PhysicalName },
 				AutoAssignItemWeight = 1f,
