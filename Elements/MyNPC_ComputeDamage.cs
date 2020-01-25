@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.ModLoader;
 
 
 namespace Elements {
 	partial class ElementsNPC : GlobalNPC {
 		public static int ComputeDamage(
+					NPC npc,
 					int damage,
 					ISet<ElementDefinition> itemElements,
 					ISet<ElementDefinition> npcElements,
@@ -27,18 +29,18 @@ namespace Elements {
 					float dmg;
 
 					if( npcElemDef.WeakAgainst.Contains(itemElemDef.Name) ) {
-//Main.NewText( "0a npc of "+npcElemDef.Name+" afflicts against "+itemElemDef.Name );
 						afflictedElements.Add( itemElemDef );
 						dmg = baseDamage * config.ElementAfflictDamageMultiplier;
+//Main.NewText( "0a "+npc.TypeName+" of "+npcElemDef.Name+" afflicted by "+itemElemDef.Name+" at "+dmg+"("+baseDamage+")" );
 					} else if( npcElemDef.StrongAgainst.Contains(itemElemDef.Name) ) {
 						absorbedElements.Add( itemElemDef );
 						dmg = baseDamage * config.ElementAbsorbDamageMultiplier;
-//Main.NewText( "0BB npc of "+npcElemDef.Name+" absorbs against "+itemElemDef.Name+" ("+absorbElements.Count+")" );
+//Main.NewText( "0b! "+npc.TypeName+" of "+npcElemDef.Name+" absorbs "+itemElemDef.Name+" at "+dmg+"("+baseDamage+")" );
 					} else if( npcElemDef.Name.Equals(itemElemDef.Name) ) {
-//Main.NewText( "0c npc of "+npcElemDef.Name+" neutral against "+itemElemDef.Name );
+//Main.NewText( "0c... "+npc.TypeName+" of "+npcElemDef.Name+" neutral against "+itemElemDef.Name );
 						dmg = baseDamage * config.ElementEqualDamageMultiplier;
 					} else {
-//Main.NewText( "0d npc of "+npcElemDef.Name+" ? against "+itemElemDef.Name );
+//Main.NewText( "0d "+npc.TypeName+" of "+npcElemDef.Name+" ? against "+itemElemDef.Name );
 						continue;
 					}
 

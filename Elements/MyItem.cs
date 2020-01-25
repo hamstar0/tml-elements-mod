@@ -51,9 +51,7 @@ namespace Elements {
 				this.AwaitsInitialization = false;
 				this.IsInitialized = true;
 				
-				bool? skipAutoInit = ElementsAPI.PreItemInitialize( item );
-
-				if( !skipAutoInit.HasValue || !skipAutoInit.Value ) {
+				if( ElementsAPI.PreItemInitialize(item) ) {
 					this.AutoInitializeElement( item );
 				}
 			} );

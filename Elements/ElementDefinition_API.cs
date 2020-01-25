@@ -13,30 +13,30 @@ namespace Elements {
 
 		////////////////
 
-		public static float GetTotalElementNPCWeight() {
-			return ElementsConfig.Instance.Elements.Sum( kv => kv.AutoAssignNPCWeight );
+		public static float GetTotalElementItemAutoAssignWeight() {
+			return ElementsConfig.Instance.Elements.Sum( kv => kv.AutoAssignItemWeight );
 		}
 
-		public static float GetTotalElementItemWeight() {
-			return ElementsConfig.Instance.Elements.Sum( kv => kv.AutoAssignItemWeight );
+		public static float GetTotalElementNPCAutoAssignWeight() {
+			return ElementsConfig.Instance.Elements.Sum( kv => kv.AutoAssignNPCWeight );
 		}
 
 
 		////////////////
 
-		public static ElementDefinition PickDefinitionForNPC( float chance ) {
+		public static ElementDefinition PickDefinitionForItem( float chanceForAny ) {
 			UnifiedRandom rand = TmlHelpers.SafelyGetRand();
-			if( rand.NextFloat() > chance ) {
+			if( rand.NextFloat() > chanceForAny ) {
 				return null;
 			}
 
 			var elements = ElementsConfig.Instance.Elements;
-			float totalWeight = ElementDefinition.GetTotalElementNPCWeight();
+			float totalWeight = ElementDefinition.GetTotalElementItemAutoAssignWeight();
 			float weight = rand.NextFloat() * totalWeight;
 
 			float countedWeights = 0f;
 			for( int i = 0; i < elements.Count; i++ ) {
-				countedWeights += elements[i].AutoAssignNPCWeight;
+				countedWeights += elements[i].AutoAssignItemWeight;
 				if( weight < countedWeights ) {
 					return elements[i];
 				}
@@ -45,19 +45,19 @@ namespace Elements {
 			return null;
 		}
 
-		public static ElementDefinition PickDefinitionForItem( float chance ) {
+		public static ElementDefinition PickDefinitionForNPC( float chanceForAny ) {
 			UnifiedRandom rand = TmlHelpers.SafelyGetRand();
-			if( rand.NextFloat() > chance ) {
+			if( rand.NextFloat() > chanceForAny ) {
 				return null;
 			}
 
 			var elements = ElementsConfig.Instance.Elements;
-			float totalWeight = ElementDefinition.GetTotalElementItemWeight();
+			float totalWeight = ElementDefinition.GetTotalElementNPCAutoAssignWeight();
 			float weight = rand.NextFloat() * totalWeight;
 
 			float countedWeights = 0f;
 			for( int i = 0; i < elements.Count; i++ ) {
-				countedWeights += elements[i].AutoAssignItemWeight;
+				countedWeights += elements[i].AutoAssignNPCWeight;
 				if( weight < countedWeights ) {
 					return elements[i];
 				}

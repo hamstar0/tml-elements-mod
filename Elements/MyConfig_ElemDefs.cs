@@ -1,13 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.Config;
-using HamstarHelpers.Classes.UI.ModConfig;
 using HamstarHelpers.Services.Configs;
-using HamstarHelpers.Services.EntityGroups.Definitions;
 
 
 namespace Elements {
@@ -31,13 +28,13 @@ namespace Elements {
 				DustQuantity = 0,
 				DustScale = 1f,
 				DustColor = Color.White,
-				IconTextureItem = new ItemDefinition( ItemID.LivingFireBlock )
+				IconTextureItem = new ItemDefinition( ItemID.ApprenticeBait )
 			},
 			new ElementDefinition {
 				Name = ElementDefinition.HeatName,
 				IconColor = Color.Red,
 				GlowColor = Color.Red,
-				StrongAgainst = new List<string> { ElementDefinition.ColdName },
+				StrongAgainst = new List<string> { ElementDefinition.ColdName, ElementDefinition.PhysicalName },
 				WeakAgainst = new List<string> { ElementDefinition.WaterName },
 				AutoAssignItemWeight = 1f,
 				AutoAssignNPCWeight = 1f,

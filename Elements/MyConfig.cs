@@ -50,16 +50,16 @@ namespace Elements {
 
 		////////////////
 
-		public Dictionary<ItemDefinition, float> AutoAssignedItems { get; set; } = new Dictionary<ItemDefinition, float>();
+		public Dictionary<ItemDefinition, float> AutoAssignedAnyItem { get; set; } = new Dictionary<ItemDefinition, float>();
 
-		public Dictionary<NPCDefinition, float> AutoAssignedNPCs { get; set; } = new Dictionary<NPCDefinition, float>();
+		public Dictionary<NPCDefinition, float> AutoAssignedAnyNPC { get; set; } = new Dictionary<NPCDefinition, float>();
 
-		public Dictionary<string, float> AutoAssignedItemGroups { get; set; } = new Dictionary<string, float> {
-			{ ItemGroupIDs.AnyWeapon, 1f }//0.5f
+		public Dictionary<string, float> AutoAssignedAnyOfItemGroup { get; set; } = new Dictionary<string, float> {
+			{ ItemGroupIDs.AnyWeapon, 0.5f }
 		};
 
-		public Dictionary<string, float> AutoAssignedNPCGroups { get; set; } = new Dictionary<string, float> {
-			{ NPCGroupIDs.AnyHostileNPC, 1f }//0.5f
+		public Dictionary<string, float> AutoAssignedAnyOfNPCGroup { get; set; } = new Dictionary<string, float> {
+			{ NPCGroupIDs.AnyHostileNPC, 0.5f }
 		};
 	}
 }

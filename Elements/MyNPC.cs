@@ -53,13 +53,13 @@ namespace Elements {
 				this.IsInitialized = true;
 				this.AwaitsInitialization = false;
 
-				bool? skipAutoInit = ElementsAPI.PreNPCInitialize( npc );
-
-				if( (!skipAutoInit.HasValue || !skipAutoInit.Value) || this.AutoInitializeElement(npc) ) {
-					if( Main.netMode == 2 ) {
-						NPCElementsProtocol.Broadcast( npc.whoAmI );
-					} else {
-						this.InitializeColorAnimation();
+				if( ElementsAPI.PreNPCInitialize(npc) ) {
+					if( this.AutoInitializeElement(npc) ) {
+						if( Main.netMode == 2 ) {
+							NPCElementsProtocol.Broadcast( npc.whoAmI );
+						} else {
+							this.InitializeColorAnimation();
+						}
 					}
 				}
 			} );
@@ -96,22 +96,23 @@ namespace Elements {
 			var myitem = item.GetGlobalItem<ElementsItem>();
 			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
 
-			this.ApplyHit( ref damage, myitem.Elements, mynpc.Elements );
+			this.ApplyHit( npc, ref damage, myitem.Elements, mynpc.Elements );
 		}
 
 		public override void ModifyHitByProjectile( NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection ) {
 			var myproj = projectile.GetGlobalProjectile<ElementsProjectile>();
 			var mynpc = npc.GetGlobalNPC<ElementsNPC>();
 
-			this.ApplyHit( ref damage, myproj.Elements, mynpc.Elements );
+			this.ApplyHit( npc, ref damage, myproj.Elements, mynpc.Elements );
 		}
 
 		////
 
-		private void ApplyHit( ref int damage, ISet<ElementDefinition> attackElements, ISet<ElementDefinition> targetElements ) {
+		private void ApplyHit( NPC npc, ref int damage, ISet<ElementDefinition> attackElements, ISet<ElementDefinition> targetElements ) {
 			ISet<ElementDefinition> absorbedElems, afflictedElems;
 
 			damage = ElementsNPC.ComputeDamage(
+				npc,
 				damage,
 				attackElements,
 				targetElements,

@@ -28,8 +28,8 @@ namespace Elements {
 
 		////////////////
 
-		internal static bool? PreItemInitialize( Item item ) {
-			bool willAutoInit = false;
+		internal static bool PreItemInitialize( Item item ) {
+			bool willAutoInit = true;
 
 			foreach( var initializer in ModContent.GetInstance<ElementsAPI>().PreItemInitializers ) {
 				bool? initState = initializer.Invoke( item );
@@ -48,7 +48,7 @@ namespace Elements {
 		}
 
 		internal static bool PreNPCInitialize( NPC npc ) {
-			bool willAutoInit = false;
+			bool willAutoInit = true;
 
 			foreach( var initializer in ModContent.GetInstance<ElementsAPI>().PreNPCInitializers ) {
 				bool? initState = initializer.Invoke( npc );
